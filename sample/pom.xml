@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.objcoding</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>sample</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>demo</name>
+	<name>sample</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -28,6 +28,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>1.5.3.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.objcoding</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
