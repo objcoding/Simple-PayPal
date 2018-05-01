@@ -36,7 +36,11 @@ public class Payments extends Component {
         Transaction transaction = new Transaction();
 
         transaction.setDescription(payPalPaymentView.getDescription());
-        transaction.setPurchaseUnitReferenceId("666666");
+        /**
+         * 实在找不到商户订单号 item_number 究竟是哪个字段（这个是真的坑爹）了，暂时用 custom 字段来传递商户订单号
+         */
+        transaction.setCustom("666666");
+
         transaction.setNotifyUrl(payPal.getNotifyUrl()); // 支付成功异步回调地址
         transaction.setAmount(amount);
 
