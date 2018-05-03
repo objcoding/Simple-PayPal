@@ -11,7 +11,7 @@ import com.objcoding.paypal.core.model.Response;
  * Email: zhangchenghui.dev@gmail.com
  * Date: 2018/5/3.
  */
-public abstract class AbstractHandler<T extends Request, K extends Response> {
+public abstract class AbstractHandler<T extends Request, K extends Response> implements Handler<T, K> {
 
     // 支付宝、微信、PayPal
     protected abstract String getPayType();
@@ -30,6 +30,8 @@ public abstract class AbstractHandler<T extends Request, K extends Response> {
     public K handle(T t) {
         K k = null;
         try {
+            onPre(t);
+            // 执行支付组件
             k = execute(t);
             if (k.getStatus().equals("SUCCESS")) {
                 onSuccess(k);
@@ -37,23 +39,38 @@ public abstract class AbstractHandler<T extends Request, K extends Response> {
                 onFail(k);
             }
         } catch (Exception e) {
-            onFail(k);
+            System.out.println("handle error" + e);
+            onException(t);
         }
         return k;
+    }
+
+    /**
+     * 请求前日志记录
+     */
+    private void onPre(T t) {
+        System.out.println("onPre >>>>>>> " + JSON.toJSONString(t));
+    }
+
+    /**
+     * 异常情况日志记录
+     */
+    private void onException(T t) {
+        System.out.println("onException >>>>>> " + JSON.toJSONString(t));
     }
 
     /**
      * 成功日志记录
      */
     private void onSuccess(K k) {
-        System.out.println(JSON.toJSONString(k));
+        System.out.println("onSuccess >>>>>>>>> " + JSON.toJSONString(k));
     }
 
     /**
      * 失败日志记录
      */
     private void onFail(K k) {
-        System.out.println(JSON.toJSONString(k));
+        System.out.println("onFail >>>>>>>>>> " + JSON.toJSONString(k));
     }
 
 }
