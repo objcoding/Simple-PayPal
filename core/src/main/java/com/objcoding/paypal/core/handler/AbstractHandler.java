@@ -40,7 +40,7 @@ public abstract class AbstractHandler<T extends Request, K extends Response> imp
             }
         } catch (Exception e) {
             System.out.println("handle error" + e);
-            onException(t);
+            onException(t, e.getMessage());
         }
         return k;
     }
@@ -55,7 +55,7 @@ public abstract class AbstractHandler<T extends Request, K extends Response> imp
     /**
      * 异常情况日志记录
      */
-    private void onException(T t) {
+    private void onException(T t, String message) {
         System.out.println("onException >>>>>> " + JSON.toJSONString(t));
     }
 
