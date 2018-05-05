@@ -13,6 +13,25 @@ import com.objcoding.paypal.core.model.Response;
  */
 public abstract class AbstractHandler<T extends Request, K extends Response> implements Handler<T, K> {
 
+    // 支付类型
+    public enum PayType {
+        ALI,
+        WECHAT,
+        PAYPAL
+    }
+
+    // 退款类型
+    public enum RefundType {
+        REFUND,
+        REFUND_NO_PWD // 无密退款
+    }
+
+    // 调用组件状态
+    public enum Status {
+        SUCCESS,
+        FAIL
+    }
+
     // 支付宝、微信、PayPal
     protected abstract String getPayType();
 
