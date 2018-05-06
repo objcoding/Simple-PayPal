@@ -5,35 +5,16 @@ import com.objcoding.paypal.core.model.Request;
 import com.objcoding.paypal.core.model.Response;
 
 /**
- * 处理器抽象类
+ * 日志处理器抽象类
  * <p>
  * Auth: zch
  * Email: zhangchenghui.dev@gmail.com
  * Date: 2018/5/3.
  */
-public abstract class AbstractHandler<T extends Request, K extends Response> implements Handler<T, K> {
-
-    // 支付类型
-    public enum PayType {
-        ALI,
-        WECHAT,
-        PAYPAL
-    }
-
-    // 退款类型
-    public enum RefundType {
-        REFUND,
-        REFUND_NO_PWD // 无密退款
-    }
-
-    // 调用组件状态
-    public enum Status {
-        SUCCESS,
-        FAIL
-    }
+public abstract class AbstractLogHandler<T extends Request, K extends Response> implements Handler<T, K> {
 
     // 支付宝、微信、PayPal
-    protected abstract String getPayType();
+    protected abstract Integer getPayType();
 
     // app, wap, web,refund
     protected abstract String getTradeType();
@@ -52,7 +33,7 @@ public abstract class AbstractHandler<T extends Request, K extends Response> imp
             onPre(t);
             // 执行支付组件
             k = execute(t);
-            if (k.getStatus().equals("SUCCESS")) {
+            if (k.getStatus().equals(EnumHandler.Status.SUCCESS.name())) {
                 onSuccess(k);
             } else {
                 onFail(k);
@@ -74,7 +55,7 @@ public abstract class AbstractHandler<T extends Request, K extends Response> imp
     /**
      * 异常情况日志记录
      */
-    private void onException(T t, String message) {
+    private void onException(T t, String exceptionMessage) {
         System.out.println("onException >>>>>> " + JSON.toJSONString(t));
     }
 
