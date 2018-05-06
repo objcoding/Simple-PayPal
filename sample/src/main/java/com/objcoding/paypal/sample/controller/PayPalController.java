@@ -138,8 +138,6 @@ public class PayPalController {
     @PostMapping(value = "/ipn")
     public void IPNHandler(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        PrintWriter out = response.getWriter();
-
         /**
          * 1. 将PayPal返回来的参数连成url参数
          */
@@ -155,11 +153,8 @@ public class PayPalController {
          */
         String verifyInfo = verifyIpnMessage();
 
-
-        // TODO 根据订单号查询订单，在根据
-
         /**
-         * 该付款明细所有变量可参考：
+         * 根据你的项目需要，获取相对应的字段，该付款明细所有变量可参考：
          * https://www.paypal.com/IntegrationCenter/ic_ipn-pdt-variable-reference.html
          */
         String itemName = request.getParameter("item_name");//商品名
@@ -179,22 +174,6 @@ public class PayPalController {
 
             if ("Completed".equals(paymentStatus)) { // payment success
 
-                if (!receiverEmail.equals("merchant's email")) {
-
-                    // 1. TODO deal with merchant system
-
-                    // 2. what should I do to tell paypal that then payment is Cheat？？？
-                    // return "FAIL"???
-
-                } else if (!paymentAmount.equals("merchant's amount")) {
-
-                    // 1. TODO deal with merchant system
-
-                    // 2. what should I do to tell paypal that then payment is Cheat？？？
-                    // return "FAIL"???
-                }
-
-
                 /**
                  * 5.检查付款状态
                  *      5.1检查 txn_id 是否已经处理过
@@ -204,32 +183,28 @@ public class PayPalController {
                  *
                  */
 
+                // TODO 自行实现业务逻辑处理
 
             } else if ("Failed".equals(paymentStatus)){
-                // TODO MQ通知订单平台
-            } else {
-                // Pending
+
+                // TODO 自行实现业务逻辑处理
+
+            } else { // Pending
+
+                // TODO 自行实现业务逻辑处理
             }
 
 
         } else if (verifyInfo.equals("INVALID")) {
 
-            // TODO MQ通知订单平台
+            // TODO 自行实现业务逻辑处理
 
-            LOG.error("验证失败");
 
-            out.println("confirmError");
         } else {
 
-            // TODO MQ通知订单平台
+            // TODO 自行实现业务逻辑处理
 
-            LOG.error("test");
-
-            out.println("confirmError");
         }
-
-        out.flush();
-        out.close();
     }
 
     private String buildRequestParams(HttpServletRequest request) throws UnsupportedEncodingException {
