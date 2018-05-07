@@ -12,5 +12,5 @@ package com.objcoding.paypal.core.handler;
  */
 public interface Handler<T, K> {
 
-    K handle(T t);
+    K handle(T t, Integer handlerType);
 }

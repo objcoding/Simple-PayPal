@@ -11,66 +11,69 @@ import com.objcoding.paypal.core.model.Response;
  * Email: zhangchenghui.dev@gmail.com
  * Date: 2018/5/3.
  */
-public abstract class AbstractLogHandler<T extends Request, K extends Response> implements Handler<T, K> {
+public abstract class AbstractLogHandler<T extends Request, K extends Response> extends AbstractHandler<T, K> {
+
+    // 日志处理类
+//    protected abstract LogBizService getLogBizService();
 
     // 支付宝、微信、PayPal
     protected abstract Integer getPayType();
 
     // app, wap, web,refund
-    protected abstract String getTradeType();
-
-    /**
-     * 调用组件实现方法
-     */
-    protected abstract K execute(T t) throws Exception;
-
-    /**
-     * 核心方法
-     */
-    public K handle(T t) {
-        K k = null;
-        try {
-            onPre(t);
-            // 执行支付组件
-            k = execute(t);
-            if (k.getStatus().equals(EnumHandler.Status.SUCCESS.name())) {
-                onSuccess(k);
-            } else {
-                onFail(k);
-            }
-        } catch (Exception e) {
-            System.out.println("handle error" + e);
-            onException(t, e.getMessage());
-        }
-        return k;
-    }
+    protected abstract Integer getTradeType();
 
     /**
      * 请求前日志记录
      */
-    private void onPre(T t) {
-        System.out.println("onPre >>>>>>> " + JSON.toJSONString(t));
+    @Override
+    protected void before(T t, Integer handlerType) {
+
+//        LogBizService logBizService = getLogBizService();
+//
+//        if (handlerType.equals(EnumHandler.HandlerType.PAY.getHandlerType())) { // 支付
+//            PayRequest request = (PayRequest) t;
+//            logBizService.record(request, null, null, getPayType(), getTradeType(), EnumHandler.Step.BEFORE.getStep());
+//        } else { // 退款
+//            RefundRequest request = (RefundRequest) t;
+//            logBizService.record(request, null, null, getPayType(), getTradeType(), EnumHandler.Step.BEFORE.getStep());
+//        }
+
+    }
+
+    /**
+     * 请求后日志记录
+     */
+    @Override
+    protected void after(K k, Integer handlerType) {
+
+//        LogBizService logBizService = getLogBizService();
+//
+//        if (handlerType.equals(EnumHandler.HandlerType.PAY.getHandlerType())) { // 支付
+//            PayResponse response = (PayResponse) k;
+//            logBizService.record(null, response, null, getPayType(), getTradeType(), EnumHandler.Step.AFTER.getStep());
+//        } else { // 退款
+//            RefundResponse response = (RefundResponse) k;
+//            logBizService.record(null, response, null, getPayType(), getTradeType(), EnumHandler.Step.AFTER.getStep());
+//        }
+
     }
 
     /**
      * 异常情况日志记录
      */
-    private void onException(T t, String exceptionMessage) {
-        System.out.println("onException >>>>>> " + JSON.toJSONString(t));
+    @Override
+    protected void exception(T t, Integer handlerType, String exceptionMessage) {
+
+//        LogBizService logBizService = getLogBizService();
+//
+//        if (handlerType.equals(EnumHandler.HandlerType.PAY.getHandlerType())) { // 支付
+//            PayRequest request = (PayRequest) t;
+//            logBizService.record(request, null, exceptionMessage, getPayType(), getTradeType(), EnumHandler.Step.EXCEPTION.getStep());
+//        } else { // 退款
+//            RefundRequest request = (RefundRequest) t;
+//            logBizService.record(request, null, exceptionMessage, getPayType(), getTradeType(), EnumHandler.Step.EXCEPTION.getStep());
+//        }
     }
 
-    /**
-     * 成功日志记录
-     */
-    private void onSuccess(K k) {
-        System.out.println("onSuccess >>>>>>>>> " + JSON.toJSONString(k));
-    }
-
-    /**
-     * 失败日志记录
-     */
-    private void onFail(K k) {
-        System.out.println("onFail >>>>>>>>>> " + JSON.toJSONString(k));
-    }
 
 }
