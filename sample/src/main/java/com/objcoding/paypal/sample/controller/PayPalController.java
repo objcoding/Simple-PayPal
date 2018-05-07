@@ -95,6 +95,12 @@ public class PayPalController {
         return "failure";
     }
 
+    /**
+     * 即时付款的订单详情
+     *
+     * @param saleId
+     * @return
+     */
     @GetMapping(value = "/payment/sale/details/{saleId}")
     public Sale saleDetails(@PathVariable String saleId) {
         try {
