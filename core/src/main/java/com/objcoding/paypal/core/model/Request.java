@@ -6,4 +6,5 @@ package com.objcoding.paypal.core.model;
  * Date: 2018/5/3.
  */
 public interface Request {
+    String getOutTradeNo();
 }

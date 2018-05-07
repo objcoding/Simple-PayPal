@@ -7,7 +7,7 @@ package com.objcoding.paypal.core.model;
  * Email: zhangchenghui.dev@gmail.com
  * Date: 2018/4/24.
  */
-public class PaymentView {
+public class PaymentRequest {
 
     Double total;
     String currency;

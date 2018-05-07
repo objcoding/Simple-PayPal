@@ -1,6 +1,5 @@
 package com.objcoding.paypal.core.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.objcoding.paypal.core.model.Request;
 import com.objcoding.paypal.core.model.Response;
 

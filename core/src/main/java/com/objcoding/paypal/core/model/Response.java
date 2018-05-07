@@ -7,5 +7,21 @@ package com.objcoding.paypal.core.model;
  */
 public interface Response {
 
+    String getOutTradeNo();
+
+    String getTradeNo();
+
     String getStatus();
+
+    String getCode();
+
+    String getSubCode();
+
+    String getMsg();
+
+    String getSubMsg();
+
+    String getSign();
+
+    String getBody();
 }

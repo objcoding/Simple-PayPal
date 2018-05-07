@@ -13,8 +13,6 @@ import java.util.Map;
  */
 public class PayPal {
 
-    private Orders orders;
-
     private Payments payments;
 
     private Payouts payouts;
@@ -37,10 +35,6 @@ public class PayPal {
 
     public void setNotifyUrl(String notifyUrl) {
         this.notifyUrl = notifyUrl;
-    }
-
-    public Orders orders() {
-        return orders;
     }
 
     public Payments payments() {
@@ -96,7 +90,6 @@ public class PayPal {
 		sdkConfig.put("mode", mode);
         APIContext apiContext = new APIContext(clientId, clientSecret, mode, sdkConfig);
 
-        orders = new Orders(this, apiContext);
         payments = new Payments(this, apiContext);
         payouts = new Payouts(this, apiContext);
         return this;

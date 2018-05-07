@@ -6,7 +6,7 @@ package com.objcoding.paypal.core.model;
  * Email: zhangchenghui.dev@gmail.com
  * Date: 2018/4/25.
  */
-public class RefundView {
+public class RefundRequest {
 
     /**
      * The ID of the sale transaction to refund.

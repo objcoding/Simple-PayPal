@@ -2,8 +2,8 @@ package com.objcoding.paypal.core.component;
 
 import com.objcoding.paypal.core.enums.PayMethodType;
 import com.objcoding.paypal.core.enums.PaymentIntent;
-import com.objcoding.paypal.core.model.PaymentView;
-import com.objcoding.paypal.core.model.RefundView;
+import com.objcoding.paypal.core.model.PaymentRequest;
+import com.objcoding.paypal.core.model.RefundRequest;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
@@ -25,17 +25,19 @@ public class Payments extends Component {
         super(payPal, apiContext);
     }
 
+    // ************************************* Payment ******************************************
+
     /**
      * 创建付款信息
      */
-    public Payment createPayment(PaymentView payPalPaymentView) throws PayPalRESTException {
+    public Payment createPayment(PaymentRequest payPalPaymentRequest) throws PayPalRESTException {
         Amount amount = new Amount();
-        amount.setCurrency(payPalPaymentView.getCurrency());
-        amount.setTotal(String.format("%.2f", payPalPaymentView.getTotal()));
+        amount.setCurrency(payPalPaymentRequest.getCurrency());
+        amount.setTotal(String.format("%.2f", payPalPaymentRequest.getTotal()));
 
         Transaction transaction = new Transaction();
 
-        transaction.setDescription(payPalPaymentView.getDescription());
+        transaction.setDescription(payPalPaymentRequest.getDescription());
         /**
          * 实在找不到商户订单号 item_number 究竟是哪个字段（这个是真的坑爹）了，暂时用 custom 字段来传递商户订单号
          */
@@ -56,8 +58,8 @@ public class Payments extends Component {
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
         // 如果前端不传取消付款返回页面url，给默认的取消付款页面url
-        redirectUrls.setCancelUrl(payPalPaymentView.getCancelUrl() == null ?
-                payPal.getCancelUrl() : payPalPaymentView.getCancelUrl());
+        redirectUrls.setCancelUrl(payPalPaymentRequest.getCancelUrl() == null ?
+                payPal.getCancelUrl() : payPalPaymentRequest.getCancelUrl());
         redirectUrls.setReturnUrl(payPal.getReturnUrl());
         payment.setRedirectUrls(redirectUrls);
 
@@ -78,34 +80,46 @@ public class Payments extends Component {
 
 
     /**
+     * 付款详细
+     */
+    public Payment details(String paymentId) throws PayPalRESTException {
+        Payment payment = Payment.get(apiContext, paymentId);
+        return payment;
+    }
+
+
+
+    // ************************************* Sale ******************************************
+
+    /**
      * 退款操作
      */
-    public DetailedRefund saleRefund(RefundView payPalRefundView) throws PayPalRESTException {
+    public DetailedRefund saleRefund(RefundRequest payPalRefundRequest) throws PayPalRESTException {
 
         // ###Sale
         // A sale transaction.
         // Create a Sale object with the
         // given sale transaction id.
         Sale sale = new Sale();
-        sale.setId(payPalRefundView.getSaleId());
+        sale.setId(payPalRefundRequest.getSaleId());
 
         // ###Refund
         // A refund transaction.
         // Use the amount to create
         // a refund object
-        RefundRequest refund = new RefundRequest();
+        com.paypal.api.payments.RefundRequest refund = new com.paypal.api.payments.RefundRequest();
 
         // ###Amount
         // Create an Amount object to
         // represent the amount to be
         // refunded. Create the refund object, if the refund is partial
         // 如果退款金额为空，则全额退款
-        if (StringUtils.isNotBlank(payPalRefundView.getTotal())) {
+        if (StringUtils.isNotBlank(payPalRefundRequest.getTotal())) {
             Amount amount = new Amount();
-            amount.setCurrency(payPalRefundView.getCurrency());
-            amount.setTotal(payPalRefundView.getTotal());
+            amount.setCurrency(payPalRefundRequest.getCurrency());
+            amount.setTotal(payPalRefundRequest.getTotal());
             refund.setAmount(amount);
-            refund.setDescription(payPalRefundView.getDescription());
+            refund.setDescription(payPalRefundRequest.getDescription());
         }
 
         // Refund by posting to the APIService
@@ -113,11 +127,20 @@ public class Payments extends Component {
         return sale.refund(apiContext, refund);
     }
 
+
     /**
-     * 付款详细
+     * 即时付款订单详情
+     *
+     * @param saleId saleID
+     * @return
+     * @throws PayPalRESTException
      */
-    public Payment details(String paymentId) throws PayPalRESTException {
-        Payment payment = Payment.get(apiContext, paymentId);
-        return payment;
+    public Sale saleDetails(String saleId) throws PayPalRESTException {
+
+        // Pass an AccessToken and the ID of the sale
+        // transaction from your payment resource.
+        return Sale.get(apiContext, saleId);
     }
+
+    // ************************************* Orders ******************************************
 }

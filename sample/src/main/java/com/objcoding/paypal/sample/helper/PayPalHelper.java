@@ -2,11 +2,12 @@ package com.objcoding.paypal.sample.helper;
 
 import com.objcoding.paypal.core.component.PayPal;
 import com.objcoding.paypal.core.component.PayPalBuilder;
-import com.objcoding.paypal.core.model.PaymentView;
-import com.objcoding.paypal.core.model.RefundView;
+import com.objcoding.paypal.core.model.PaymentRequest;
+import com.objcoding.paypal.core.model.RefundRequest;
 import com.objcoding.paypal.sample.config.PayPalConfig;
 import com.paypal.api.payments.DetailedRefund;
 import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.Sale;
 import com.paypal.base.rest.PayPalRESTException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +45,8 @@ public class PayPalHelper {
     /**
      * 创建付款信息，并返回验证url
      */
-    public Payment createPayment(PaymentView payPalPaymentView) throws PayPalRESTException {
-        return payPal.payments().createPayment(payPalPaymentView);
+    public Payment createPayment(PaymentRequest payPalPaymentRequest) throws PayPalRESTException {
+        return payPal.payments().createPayment(payPalPaymentRequest);
     }
 
     /**
@@ -58,8 +59,15 @@ public class PayPalHelper {
     /**
      * 退款
      */
-    public DetailedRefund saleRefund(RefundView payPalRefundView) throws PayPalRESTException {
-        return payPal.payments().saleRefund(payPalRefundView);
+    public DetailedRefund saleRefund(RefundRequest payPalRefundRequest) throws PayPalRESTException {
+        return payPal.payments().saleRefund(payPalRefundRequest);
+    }
+
+    /**
+     * 即时退款详情
+     */
+    public Sale saleDetails(String saleId) throws PayPalRESTException {
+        return payPal.payments().saleDetails(saleId);
     }
 
     // *********************************** payouts ************************************

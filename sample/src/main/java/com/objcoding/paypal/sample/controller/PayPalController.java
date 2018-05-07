@@ -1,12 +1,13 @@
 package com.objcoding.paypal.sample.controller;
 
 import com.objcoding.paypal.core.enums.CharsetType;
-import com.objcoding.paypal.core.model.PaymentView;
-import com.objcoding.paypal.core.model.RefundView;
+import com.objcoding.paypal.core.model.PaymentRequest;
+import com.objcoding.paypal.core.model.RefundRequest;
 import com.objcoding.paypal.sample.helper.PayPalHelper;
 import com.paypal.api.payments.DetailedRefund;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.Sale;
 import com.paypal.base.Constants;
 import com.paypal.base.rest.PayPalRESTException;
 import org.apache.commons.lang.StringUtils;
@@ -51,13 +52,13 @@ public class PayPalController {
     /**
      * 创建即时（余额）付款信息，并返回 付款id 和 approval_url
      *
-     * @param payPalPaymentView payPal payment view
+     * @param payPalPaymentRequest payPal payment view
      * @return approval_url
      */
     @PostMapping(value = "/payment")
     public @ResponseBody
-    Map<String, String> payment(@RequestBody PaymentView payPalPaymentView) throws PayPalRESTException {
-        Payment payment = paypalHelper.createPayment(payPalPaymentView);
+    Map<String, String> payment(@RequestBody PaymentRequest payPalPaymentRequest) throws PayPalRESTException {
+        Payment payment = paypalHelper.createPayment(payPalPaymentRequest);
         if (null != payment) {
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
@@ -92,6 +93,17 @@ public class PayPalController {
             }
         }
         return "failure";
+    }
+
+    @GetMapping(value = "/payment/sale/details/{saleId}")
+    public Sale saleDetails(@PathVariable String saleId) {
+        try {
+            Sale sale = paypalHelper.saleDetails(saleId);
+            return sale;
+        } catch (PayPalRESTException e) {
+            LOG.error("订单查询失败: {}", e.getMessage());
+        }
+        return null;
     }
 
     // ************************************ IPN（Instant Payment Notification） ************************
@@ -298,9 +310,9 @@ public class PayPalController {
      */
     @PostMapping(value = "/sale/refund")
     public @ResponseBody
-    DetailedRefund refund(@RequestBody RefundView payPalRefundView)
+    DetailedRefund refund(@RequestBody RefundRequest payPalRefundRequest)
             throws PayPalRESTException {
-        return paypalHelper.saleRefund(payPalRefundView);
+        return paypalHelper.saleRefund(payPalRefundRequest);
     }
 
 }
